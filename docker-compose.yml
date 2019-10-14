@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  skf:
+    image: blabla1337/skf-flask
+    environment:
+     - "ORIGIN=10.0.0.1"
+     - "JWT_SECRET=secret"
+    ports:
+     - 1920:443
+    volumes:
+     - vol_skf:/skf-flask/skf/db/
+    networks:
+     - net_skf
+    logging:
+      driver: json-file
+    deploy:
+      labels:
+        skf.service.deployment.autoredeploy: 'true'
+      restart_policy:
+        max_attempts: 3
+      placement:
+        constraints:
+         - node.hostname == host1
+
+networks:
+  net_skf:
+    driver: overlay
+
+volumes:
+  vol_skf:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /opt/vol_skf/
